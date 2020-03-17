@@ -1,8 +1,13 @@
-import re
+from os import environ
+from re import match
 from datetime import datetime
 from discord import Embed, Colour
 from discord.ext import commands
+from discord.utils import get
 from Utilities.DatabaseHandler import DatabaseHandler
+
+LogLevel0 = int(environ.get('LEVEL0'))
+modID = int(environ.get('ROLE0'))
 
 
 class Filter(commands.Cog):
@@ -19,7 +24,7 @@ class Filter(commands.Cog):
         if message.author == self.bot.user:
             return
 
-        if re.match("(.*)\|\|(.*)\|\|(.*)", message.content):
+        if match("(.*)\|\|(.*)\|\|(.*)", message.content):
             await message.delete()
             return
 
@@ -27,19 +32,23 @@ class Filter(commands.Cog):
             if bad_word in message.content.lower().replace(" ", ""):
                 dt = datetime.now()
                 uUser = message.author.display_name + " (<@" + str(message.author.id) + ">)"
-                uAvatar = message.author.avatar_url
-                bad_channel = message.channel.name
-                targetCH = message.channel
+                uAvatar = message.author.avatar_url_as(static_format='jpeg')
+                bad_channel = message.channel.mention
+                orig_msg = message.content
+                targetCH = await self.bot.fetch_channel(LogLevel0)
+                pingMods = get(message.guild.roles, id=modID).mention
 
                 await message.delete()
 
-                embedx = Embed(title="Member Report (Bad Word)", colour=Colour(0x417505), timestamp=dt)
+                embedx = Embed(title="Member Report (Bad Word)", colour=Colour(0x8B572A), timestamp=dt)
                 embedx.set_thumbnail(url=uAvatar)
-                embedx.set_footer(text="r/Jailbreak Bot")
+                embedx.set_footer(text="Prototype X1")
                 embedx.add_field(name="Member", value=uUser, inline=False)
                 embedx.add_field(name="Word", value=bad_word, inline=False)
+                embedx.add_field(name="Original Message", value=orig_msg, inline=False)
                 embedx.add_field(name="Channel", value=bad_channel, inline=False)
 
+                await targetCH.send(pingMods)
                 await targetCH.send(embed=embedx)
 
     @commands.command(name="reloadFilter")
