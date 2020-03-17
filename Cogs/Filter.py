@@ -1,6 +1,6 @@
 import re
-import datetime
-import discord
+from datetime import datetime
+from discord import Embed, Colour
 from discord.ext import commands
 from Utilities.DatabaseHandler import DatabaseHandler
 
@@ -25,7 +25,7 @@ class Filter(commands.Cog):
 
         for bad_word in self.filtered_words:
             if bad_word in message.content.lower().replace(" ", ""):
-                dt = datetime.datetime.now()
+                dt = datetime.now()
                 uUser = message.author.display_name + " (<@" + str(message.author.id) + ">)"
                 uAvatar = message.author.avatar_url
                 bad_channel = message.channel.name
@@ -33,7 +33,7 @@ class Filter(commands.Cog):
 
                 await message.delete()
 
-                embedx = discord.Embed(title="Member Report (Bad Word)", colour=discord.Colour(0x417505), timestamp=dt)
+                embedx = Embed(title="Member Report (Bad Word)", colour=Colour(0x417505), timestamp=dt)
                 embedx.set_thumbnail(url=uAvatar)
                 embedx.set_footer(text="r/Jailbreak Bot")
                 embedx.add_field(name="Member", value=uUser, inline=False)
