@@ -1,4 +1,4 @@
-import discord
+from discord import Embed, Colour
 from discord.ext import commands
 from Utilities.DatabaseHandler import DatabaseHandler
 
@@ -24,15 +24,15 @@ class Moderators(commands.Cog):
     async def addbadword_error(self, ctx, error):
         await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
-            embedx = discord.Embed(title="Command Error", colour=discord.Colour(0x000001))
+            embedx = Embed(title="Command Error", colour=Colour(0x000001))
             embedx.add_field(name="dmesg", value="An argument was missing!")
             await ctx.send(embed=embedx, delete_after=5)
         elif isinstance(error, commands.MissingRole):
-            embedx = discord.Embed(title="Command Error", colour=discord.Colour(0x000001))
+            embedx = Embed(title="Command Error", colour=Colour(0x000001))
             embedx.add_field(name="dmesg", value="You do not have permissions to run this command!")
             await ctx.send(embed=embedx, delete_after=5)
         else:
-            embedx = discord.Embed(title="Command Error", colour=discord.Colour(0x000001))
+            embedx = Embed(title="Command Error", colour=Colour(0x000001))
             embedx.add_field(name="dmesg", value="Unknown error, contact Bot Administrator!")
             await ctx.send(embed=embedx, delete_after=5)
 
@@ -53,15 +53,15 @@ class Moderators(commands.Cog):
     async def removebadword_error(self, ctx, error):
         await ctx.message.delete()
         if isinstance(error, commands.MissingRequiredArgument):
-            embedx = discord.Embed(title="Command Error", colour=discord.Colour(0x000001))
+            embedx = Embed(title="Command Error", colour=Colour(0x000001))
             embedx.add_field(name="dmesg", value="An argument was missing!")
             await ctx.send(embed=embedx, delete_after=5)
         elif isinstance(error, commands.MissingRole):
-            embedx = discord.Embed(title="Command Error", colour=discord.Colour(0x000001))
+            embedx = Embed(title="Command Error", colour=Colour(0x000001))
             embedx.add_field(name="dmesg", value="You do not have permissions to run this command!")
             await ctx.send(embed=embedx, delete_after=5)
         else:
-            embedx = discord.Embed(title="Command Error", colour=discord.Colour(0x000001))
+            embedx = Embed(title="Command Error", colour=Colour(0x000001))
             embedx.add_field(name="dmesg", value="Unknown error, contact Bot Administrator!")
             await ctx.send(embed=embedx, delete_after=5)
 
