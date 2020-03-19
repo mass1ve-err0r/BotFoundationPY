@@ -20,22 +20,6 @@ class Moderators(commands.Cog):
         else:
             raise Exception()
 
-    @addbadword.error
-    async def addbadword_error(self, ctx, error):
-        await ctx.message.delete()
-        if isinstance(error, commands.MissingRequiredArgument):
-            embedx = Embed(title="Command Error", colour=Colour(0x000001))
-            embedx.add_field(name="dmesg", value="An argument was missing!")
-            await ctx.send(embed=embedx, delete_after=5)
-        elif isinstance(error, commands.MissingRole):
-            embedx = Embed(title="Command Error", colour=Colour(0x000001))
-            embedx.add_field(name="dmesg", value="You do not have permissions to run this command!")
-            await ctx.send(embed=embedx, delete_after=5)
-        else:
-            embedx = Embed(title="Command Error", colour=Colour(0x000001))
-            embedx.add_field(name="dmesg", value="Unknown error, contact Bot Administrator!")
-            await ctx.send(embed=embedx, delete_after=5)
-
     @commands.command(name='removebadword')
     @commands.has_role('Moderators')
     @commands.guild_only()
@@ -50,16 +34,17 @@ class Moderators(commands.Cog):
             raise Exception()
 
     @removebadword.error
-    async def removebadword_error(self, ctx, error):
-        await ctx.message.delete()
+    @addbadword.error
+    async def common_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
+            await ctx.message.delete()
             embedx = Embed(title="Command Error", colour=Colour(0x000001))
             embedx.add_field(name="dmesg", value="An argument was missing!")
             await ctx.send(embed=embedx, delete_after=5)
         elif isinstance(error, commands.MissingRole):
-            embedx = Embed(title="Command Error", colour=Colour(0x000001))
-            embedx.add_field(name="dmesg", value="You do not have permissions to run this command!")
-            await ctx.send(embed=embedx, delete_after=5)
+            return
+        elif isinstance(error, commands.NoPrivateMessage):
+            return
         else:
             embedx = Embed(title="Command Error", colour=Colour(0x000001))
             embedx.add_field(name="dmesg", value="Unknown error, contact Bot Administrator!")
