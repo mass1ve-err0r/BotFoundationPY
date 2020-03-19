@@ -8,7 +8,8 @@ bot.remove_command("help")
 extensions = ['Cogs.Moderators',
               'Cogs.Logger',
               'Cogs.Filter',
-              'Cogs.Fun']
+              'Cogs.Fun',
+              'Cogs.Maintenance']
 
 if __name__ == '__main__':
     for extension in extensions:
