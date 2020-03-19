@@ -29,4 +29,9 @@ async def on_message(message):
     await bot.process_commands(message)
 
 
+@bot.event
+async def on_command_error(ctx, error):
+    if isinstance(error, commands.CommandNotFound):
+        return
+
 bot.run(os.environ.get('TOKEN'))
