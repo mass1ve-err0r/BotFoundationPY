@@ -1,5 +1,6 @@
 import os
-import discord
+from discord import Game
+from datetime import datetime
 from discord.ext import commands
 
 bot = commands.Bot(command_prefix='!')
@@ -18,8 +19,10 @@ if __name__ == '__main__':
 
 @bot.event
 async def on_ready():
+    await bot.wait_until_ready()
+    print('Logged in at: {0}'.format(datetime.now()))
     print('We have logged in as {0.user}'.format(bot))
-    await bot.change_presence(activity=discord.Game(name='Be nice to people!'))
+    await bot.change_presence(activity=Game(name='Be nice to people!'))
 
 
 @bot.event
