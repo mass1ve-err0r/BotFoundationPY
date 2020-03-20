@@ -41,6 +41,13 @@ class Maintenance(commands.Cog):
         result = (await eval(f"{fn_name}()", env))
         await ctx.send(result)
 
+    @commands.command(name='ping')
+    async def ping(self, ctx):
+        if ctx.author.id != 485880883119783956:
+            return
+
+        await ctx.send('pong! (Latency: {0} seconds)'.format(round(self.bot.latency, 1)))
+
 
 def setup(bot):
     bot.add_cog(Maintenance(bot))
