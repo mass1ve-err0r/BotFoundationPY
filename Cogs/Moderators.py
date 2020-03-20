@@ -1,6 +1,15 @@
-from discord import Embed, Colour
+import asyncio
+import os
+from datetime import datetime
+from discord import Embed, Colour, Member
 from discord.ext import commands
+from discord.utils import get
 from Utilities.DatabaseHandler import DatabaseHandler
+
+mutedRoleID = int(os.environ.get('MutedRoleID'))
+reportChannel = int(os.environ.get('LEVEL0'))
+modPubChannel = int(os.environ.get('LEVEL1'))
+serverLogsChannel = int(os.environ.get('LEVEL2'))
 
 
 class Moderators(commands.Cog):
@@ -28,18 +37,83 @@ class Moderators(commands.Cog):
         ret = await self.dbManager.removeBadWord(badw)
         if ret == 0:
             await ctx.send("Successfully removed from Database!\nPlease run `!reloadFilter 1` to update the filter!")
-            #
             return
         else:
             raise Exception()
 
+    @commands.command(name='mute')
+    @commands.has_role('Moderators')
+    @commands.guild_only()
+    async def mute(self, ctx, member: Member, duration: str, *, reason: str):
+        dt = datetime.now()
+        mutedRole = get(ctx.guild.roles, id=mutedRoleID)
+
+        if member == ctx.author:
+            await ctx.message.delete()
+            embedx1 = Embed(title="ERROR (Mute Command)", color=Colour(0xD0021B), timestamp=dt)
+            embedx1.set_footer(text="Prototype X1")
+            embedx1.add_field(name="dmsg", value="Cannot Mute Command Executioner!")
+            await ctx.send(embed=embedx1, delete_after=3)
+            return
+
+        for currentRole in member.roles:
+            if currentRole == mutedRole:
+                await ctx.message.delete()
+                embedx2 = Embed(title="ERROR (Mute Command)", color=Colour(0xD0021B), timestamp=dt)
+                embedx2.set_footer(text="Prototype X1")
+                embedx2.add_field(name="dmsg", value="User is already muted!")
+                await ctx.send(embed=embedx2, delete_after=3)
+                return
+
+        dPeriod = duration[-1]
+        dTime = 0
+        dString = ""
+        if dPeriod == 'm':
+            dTime = int(duration[:-1]) * 60
+            dString = str(int(duration[:-1])) + " Minutes"
+        elif dPeriod == 'h':
+            dTime = int(duration[:-1]) * 3600
+            dString = str(int(duration[:-1])) + " Hours"
+
+        uUser = member.display_name + " (<@" + str(member.id) + ">)"
+        uMod = ctx.author.display_name + " (<@" + str(ctx.author.id) + ">)"
+        uAvatar = member.avatar_url_as(static_format='jpeg')
+        privateCH = self.bot.get_channel(modPubChannel)
+
+        await ctx.message.delete()
+        await member.add_roles(mutedRole)
+
+        embedx3 = Embed(title="Member Muted", colour=Colour(0xD0021B), timestamp=dt)
+        embedx3.set_thumbnail(url=uAvatar)
+        embedx3.set_footer(text="Prototype X1")
+        embedx3.add_field(name="Member", value=uUser, inline=False)
+        embedx3.add_field(name="Mod", value=uMod, inline=False)
+        embedx3.add_field(name="Duration", value=dString, inline=False)
+        embedx3.add_field(name="Reason", value=reason, inline=False)
+        await privateCH.send(embed=embedx3)
+
+        if dTime > 0:
+            await asyncio.sleep(dTime)
+            for currentRole2 in member.roles:
+                if currentRole2 == mutedRole:
+                    await member.remove_roles(mutedRole)
+                    dt2 = datetime.now()
+                    embedx4 = Embed(title="Member Un-Muted", color=Colour(0xD0021B), timestamp=dt2)
+                    embedx4.set_footer(text="Prototype X1")
+                    embedx4.set_thumbnail(url=uAvatar)
+                    embedx4.add_field(name="Member", value=uUser, inline=False)
+                    embedx4.add_field(name="Mod", value=uMod, inline=False)
+                    embedx4.add_field(name="Muted at", value=str(dt), inline=False)
+                    await privateCH.send(embed=embedx4)
+
     @removebadword.error
     @addbadword.error
+    @mute.error
     async def common_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.message.delete()
-            embedx = Embed(title="Command Error", colour=Colour(0x000001))
-            embedx.add_field(name="dmesg", value="An argument was missing!")
+            embedx = Embed(title="Command Invocation Error", colour=Colour(0x000001))
+            embedx.add_field(name="dmesg", value="Argument number mismatch! Please check your command.")
             await ctx.send(embed=embedx, delete_after=5)
         elif isinstance(error, commands.MissingRole):
             return
