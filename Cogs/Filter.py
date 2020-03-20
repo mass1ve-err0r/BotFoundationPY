@@ -24,6 +24,15 @@ class Filter(commands.Cog):
         if message.author == self.bot.user:
             return
 
+        if match("(.*)\|\|(.*)\|\|(.*)", message.content):
+            await message.delete()
+            return
+
+        if len(message.content) > 5:
+            if message.content.replace(" ", "").isupper():
+                await message.delete()
+                return
+
         for bad_word in self.filtered_words:
             if bad_word in message.content.lower().replace(" ", ""):
                 dt = datetime.now()
@@ -46,25 +55,6 @@ class Filter(commands.Cog):
 
                 await targetCH.send(pingMods)
                 await targetCH.send(embed=embedx)
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author == self.bot.user:
-            return
-
-        if match("(.*)\|\|(.*)\|\|(.*)", message.content):
-            await message.delete()
-            return
-
-    @commands.Cog.listener()
-    async def on_message(self, message):
-        if message.author == self.bot.user:
-            return
-
-        if len(message.content) > 5:
-            if match("^[A-Z\s]+$", message.content):
-                await message.delete()
-                return
 
     @commands.command(name="reloadFilter")
     @commands.has_role('Moderators')
