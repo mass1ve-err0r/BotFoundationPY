@@ -10,7 +10,8 @@ extensions = ['Cogs.Moderators',
               'Cogs.Logger',
               'Cogs.Filter',
               'Cogs.Fun',
-              'Cogs.Maintenance']
+              'Cogs.Maintenance',
+              'Cogs.AntiSpam']
 
 if __name__ == '__main__':
     for extension in extensions:
