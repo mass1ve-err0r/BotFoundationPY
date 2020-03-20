@@ -1,12 +1,17 @@
 import os
 import pymongo
+import urllib.parse
 
 z1 = os.environ.get('CON2')
+mdbuser = urllib.parse.quote_plus(os.environ.get('CON0u'))
+mdbpass = urllib.parse.quote_plus(os.environ.get('CON0p'))
+mdbaddress = os.environ.get('CON0')
+mdbTargetDB = os.environ.get('CON0db')
 
 
 class DatabaseHandler():
     def __init__(self):
-        self.client = pymongo.MongoClient(os.environ.get('CON0'))
+        self.client = pymongo.MongoClient("mongodb://" + mdbuser + ":" + mdbpass + "@" + mdbaddress + "/?authSource=" + mdbTargetDB + "&authMechanism=SCRAM-SHA-256")
         self.dbHandler = self.client[os.environ.get('CON1')]
 
     def getAllBadWordsSYNC(self):
