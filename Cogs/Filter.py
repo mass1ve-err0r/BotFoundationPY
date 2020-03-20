@@ -6,7 +6,7 @@ from discord.ext import commands
 from discord.utils import get
 from Utilities.DatabaseHandler import DatabaseHandler
 
-LogLevel0 = int(environ.get('LEVEL0'))
+reportChannelID = int(environ.get('LEVEL0'))
 modID = int(environ.get('ROLE0'))
 
 
@@ -35,7 +35,7 @@ class Filter(commands.Cog):
                 uAvatar = message.author.avatar_url_as(static_format='jpeg')
                 bad_channel = message.channel.mention
                 orig_msg = message.content
-                targetCH = await self.bot.fetch_channel(LogLevel0)
+                targetCH = self.bot.get_channel(reportChannelID)
                 pingMods = get(message.guild.roles, id=modID).mention
 
                 await message.delete()
