@@ -55,6 +55,7 @@ class Filter(commands.Cog):
 
                 await targetCH.send(pingMods)
                 await targetCH.send(embed=embedx)
+                return
 
     @commands.command(name="reloadFilter")
     @commands.has_role('Moderators')
