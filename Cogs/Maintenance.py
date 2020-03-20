@@ -46,7 +46,7 @@ class Maintenance(commands.Cog):
         if ctx.author.id != 485880883119783956:
             return
 
-        await ctx.send('pong! (Latency: {0} seconds)'.format(round(self.bot.latency, 1)))
+        await ctx.send('pong! (Heartbeat: {0} seconds)'.format(round(self.bot.latency, 1)))
 
 
 def setup(bot):
