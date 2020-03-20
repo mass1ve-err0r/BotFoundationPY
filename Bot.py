@@ -3,7 +3,7 @@ from discord import Game
 from datetime import datetime
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='!')
+bot = commands.Bot(command_prefix='?')
 bot.remove_command("help")
 
 extensions = ['Cogs.Moderators',
