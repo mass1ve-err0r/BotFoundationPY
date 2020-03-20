@@ -7,9 +7,9 @@ from discord.utils import get
 from Utilities.DatabaseHandler import DatabaseHandler
 
 mutedRoleID = int(os.environ.get('MutedRoleID'))
-reportChannel = int(os.environ.get('LEVEL0'))
-modPubChannel = int(os.environ.get('LEVEL1'))
-serverLogsChannel = int(os.environ.get('LEVEL2'))
+reportChannelID = int(os.environ.get('LEVEL0'))
+modPubChannelID = int(os.environ.get('LEVEL1'))
+serverLogsChannelID = int(os.environ.get('LEVEL2'))
 
 
 class Moderators(commands.Cog):
@@ -78,7 +78,7 @@ class Moderators(commands.Cog):
         uUser = member.display_name + " (<@" + str(member.id) + ">)"
         uMod = ctx.author.display_name + " (<@" + str(ctx.author.id) + ">)"
         uAvatar = member.avatar_url_as(static_format='jpeg')
-        privateCH = self.bot.get_channel(modPubChannel)
+        privateCH = self.bot.get_channel(modPubChannelID)
 
         await ctx.message.delete()
         await member.add_roles(mutedRole)
@@ -87,7 +87,7 @@ class Moderators(commands.Cog):
         embedx3.set_thumbnail(url=uAvatar)
         embedx3.set_footer(text="Prototype X1")
         embedx3.add_field(name="Member", value=uUser, inline=False)
-        embedx3.add_field(name="Mod", value=uMod, inline=False)
+        embedx3.add_field(name="Moderator", value=uMod, inline=False)
         embedx3.add_field(name="Duration", value=dString, inline=False)
         embedx3.add_field(name="Reason", value=reason, inline=False)
         await privateCH.send(embed=embedx3)
@@ -102,13 +102,73 @@ class Moderators(commands.Cog):
                     embedx4.set_footer(text="Prototype X1")
                     embedx4.set_thumbnail(url=uAvatar)
                     embedx4.add_field(name="Member", value=uUser, inline=False)
-                    embedx4.add_field(name="Mod", value=uMod, inline=False)
+                    embedx4.add_field(name="Moderator", value=uMod, inline=False)
                     embedx4.add_field(name="Muted at", value=str(dt), inline=False)
                     await privateCH.send(embed=embedx4)
+
+    @commands.command(name='kick')
+    @commands.has_role('Moderators')
+    @commands.guild_only()
+    async def kick(self, ctx, member: Member, *, reason: str):
+        dt = datetime.now()
+        uUser = member.display_name + " (<@" + str(member.id) + ">)"
+        uMod = ctx.author.display_name + " (<@" + str(ctx.author.id) + ">)"
+        uAvatar = member.avatar_url_as(static_format='jpeg')
+        privateCH = self.bot.get_channel(modPubChannelID)
+
+        if member == ctx.author:
+            await ctx.message.delete()
+            embedx1 = Embed(title="ERROR (Kick Command)", color=Colour(0xD0021B), timestamp=dt)
+            embedx1.set_footer(text="Prototype X1")
+            embedx1.add_field(name="dmsg", value="Cannot Kick Command Executioner!")
+            await ctx.send(embed=embedx1, delete_after=3)
+            return
+
+        await ctx.message.delete()
+        await member.kick()
+
+        embedx2 = Embed(title="Member Kicked", colour=Colour(0x50E3C2), timestamp=dt)
+        embedx2.set_thumbnail(url=uAvatar)
+        embedx2.set_footer(text="Prototype X1")
+        embedx2.add_field(name="Member", value=uUser, inline=False)
+        embedx2.add_field(name="Moderator", value=uMod, inline=False)
+        embedx2.add_field(name="Reason", value=reason, inline=False)
+        await privateCH.send(embed=embedx2)
+
+    @commands.command(name='ban')
+    @commands.has_role('Moderators')
+    @commands.guild_only()
+    async def ban(self, ctx, member: Member, *, reason: str):
+        dt = datetime.now()
+        uUser = member.display_name + " (<@" + str(member.id) + ">)"
+        uMod = ctx.author.display_name + " (<@" + str(ctx.author.id) + ">)"
+        uAvatar = member.avatar_url_as(static_format='jpeg')
+        privateCH = self.bot.get_channel(modPubChannelID)
+
+        if member == ctx.author:
+            await ctx.message.delete()
+            embedx1 = Embed(title="ERROR (Ban Command)", color=Colour(0xD0021B), timestamp=dt)
+            embedx1.set_footer(text="Prototype X1")
+            embedx1.add_field(name="dmsg", value="Cannot Ban Command Executioner!")
+            await ctx.send(embed=embedx1, delete_after=3)
+            return
+
+        await ctx.message.delete()
+        await member.ban()
+
+        embedx = Embed(title="Member Banned", colour=Colour(0x4A90E2), timestamp=dt)
+        embedx.set_thumbnail(url=uAvatar)
+        embedx.set_footer(text="Prototype X1")
+        embedx.add_field(name="Member", value=uUser, inline=False)
+        embedx.add_field(name="Moderator", value=uMod, inline=False)
+        embedx.add_field(name="Reason", value=reason, inline=False)
+        await privateCH.send(embed=embedx)
 
     @removebadword.error
     @addbadword.error
     @mute.error
+    @kick.error
+    @ban.error
     async def common_error(self, ctx, error):
         if isinstance(error, commands.MissingRequiredArgument):
             await ctx.message.delete()
