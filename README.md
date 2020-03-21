@@ -5,7 +5,7 @@ This repository holds the base-code for any Bot created with discord-py.
 
 A list of features can be found below, for triggers and command layouts, visit the wiki! (coming soon)
 
-# Featureset
+## Featureset
 - **Moderation**
 	- ban
 	- kick
@@ -24,6 +24,6 @@ A list of features can be found below, for triggers and command layouts, visit t
 	- eval
 		- _(!) please **ONLY** include if needed, this command needs to be locked to an owner. Include at your own risk!_
 
-# Credits
+## Credits
 - Rapptz - Discordpy
 - My pigeon gang - support
