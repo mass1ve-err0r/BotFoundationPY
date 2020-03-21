@@ -1,7 +1,7 @@
 import asyncio
-import requests
+from requests import get
 from datetime import datetime
-from discord import Embed, Colour
+from discord import Embed, Colour, TextChannel
 from discord.ext import commands
 
 
@@ -25,7 +25,7 @@ class Fun(commands.Cog):
             targetURL = baseURL + country.strip()
 
         loop = asyncio.get_event_loop()
-        future1 = loop.run_in_executor(None, requests.get, targetURL)
+        future1 = loop.run_in_executor(None, get, targetURL)
         response_data = await future1
         data = response_data.json()
 
@@ -51,6 +51,12 @@ class Fun(commands.Cog):
             embedx2.add_field(name="**Active Cases (Infected)**", value=str(data['active']), inline=False)
             embedx2.add_field(name="**(current) Ratio: Case / 1M**", value=str(data['casesPerOneMillion']), inline=False)
             await ctx.send(embed=embedx2)
+
+    @commands.command(name="say")
+    @commands.has_role('Moderators')
+    @commands.guild_only()
+    async def corona(self, ctx, channel: TextChannel, *, message: str):
+        await channel.send(message)
 
 
 def setup(bot):
