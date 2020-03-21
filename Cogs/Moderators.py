@@ -41,6 +41,26 @@ class Moderators(commands.Cog):
         else:
             raise Exception()
 
+    @commands.command(name='showbadwords')
+    @commands.has_role('Moderators')
+    @commands.guild_only()
+    async def showbadwords(self, ctx):
+        dt = datetime.now()
+        listString = ""
+        rdata = []
+        udata = await self.dbManager.getAllBadWords()
+
+        for entry in udata:
+            rdata.append(entry['badword'])
+        for word in rdata:
+            listString += word + "\n"
+
+        embedx = Embed(title="(Guild) Filtered Words", color=Colour(0xDA6262), timestamp=dt)
+        embedx.set_footer(text="Plebs Watcher")
+        embedx.add_field(name="Bad words", value=listString)
+
+        await ctx.send(embed=embedx)
+
     @commands.command(name='mute')
     @commands.has_role('Moderators')
     @commands.guild_only()
