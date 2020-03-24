@@ -6,12 +6,10 @@ from discord.ext import commands
 bot = commands.Bot(command_prefix='?')
 bot.remove_command("help")
 
+# Disabled Cogs: AntiSpam, Logger, Filter, OptionalFilters, Music
 extensions = ['Cogs.Moderators',
-              'Cogs.Logger',
-              'Cogs.Filter',
               'Cogs.Fun',
-              'Cogs.Maintenance',
-              'Cogs.AntiSpam']
+              'Cogs.Maintenance']
 
 if __name__ == '__main__':
     for extension in extensions:
@@ -23,7 +21,7 @@ async def on_ready():
     await bot.wait_until_ready()
     print('Logged in at: {0}'.format(datetime.now()))
     print('We have logged in as {0.user}'.format(bot))
-    await bot.change_presence(activity=Game(name='Be nice to people!'))
+    await bot.change_presence(activity=Game(name="Hey there, I'm Siri !"))
 
 
 @bot.event

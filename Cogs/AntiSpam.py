@@ -1,6 +1,6 @@
 import os
 from datetime import datetime
-from discord import Member, Embed, Colour
+from discord import Member, Embed, Colour, NotFound
 from discord.ext import commands
 from discord.utils import get
 
@@ -38,17 +38,20 @@ class AntiSpam(commands.Cog):
         if not message.clean_content or not previousMessage.clean_content:
             return
 
-        if previousMessage is not None and \
-                previousMessage.author.display_name == message.author.display_name and \
-                previousMessage.clean_content == message.clean_content:
+        try:
+            if previousMessage is not None and \
+                    previousMessage.author.display_name == message.author.display_name and \
+                    previousMessage.clean_content == message.clean_content:
 
-            embedx = await self.getAntiSpamEmbed(message.author, message.channel.mention)
-            targetCH = self.bot.get_channel(reportChannelID)
-            pingMods = get(message.guild.roles, id=modID).mention
+                embedx = await self.getAntiSpamEmbed(message.author, message.channel.mention)
+                targetCH = self.bot.get_channel(reportChannelID)
+                pingMods = get(message.guild.roles, id=modID).mention
 
-            await message.delete()
-            await targetCH.send(pingMods)
-            await targetCH.send(embed=embedx)
+                await message.delete()
+                await targetCH.send(pingMods)
+                await targetCH.send(embed=embedx)
+        except NotFound:
+            return
 
 
 def setup(bot):

@@ -1,7 +1,6 @@
 from os import environ
-from re import match
 from datetime import datetime
-from discord import Embed, Colour
+from discord import Embed, Colour, NotFound
 from discord.ext import commands
 from discord.utils import get
 from Utilities.DatabaseHandler import DatabaseHandler
@@ -24,38 +23,32 @@ class Filter(commands.Cog):
         if message.author == self.bot.user:
             return
 
-        if match("(.*)\|\|(.*)\|\|(.*)", message.content):
-            await message.delete()
+        try:
+            for bad_word in self.filtered_words:
+                if bad_word in message.content.lower().replace(" ", ""):
+                    dt = datetime.now()
+                    uUser = message.author.display_name + " (<@" + str(message.author.id) + ">)"
+                    uAvatar = message.author.avatar_url_as(static_format='jpeg')
+                    bad_channel = message.channel.mention
+                    orig_msg = message.content
+                    targetCH = self.bot.get_channel(reportChannelID)
+                    pingMods = get(message.guild.roles, id=modID).mention
+
+                    await message.delete()
+
+                    embedx = Embed(title="Member Report (Bad Word)", colour=Colour(0x8B572A), timestamp=dt)
+                    embedx.set_thumbnail(url=uAvatar)
+                    embedx.set_footer(text="Prototype X1")
+                    embedx.add_field(name="Member", value=uUser, inline=False)
+                    embedx.add_field(name="Word", value=bad_word, inline=False)
+                    embedx.add_field(name="Original Message", value=orig_msg, inline=False)
+                    embedx.add_field(name="Channel", value=bad_channel, inline=False)
+
+                    await targetCH.send(pingMods)
+                    await targetCH.send(embed=embedx)
+                    return
+        except NotFound:
             return
-
-        if len(message.content) > 5:
-            if message.content.replace(" ", "").isupper():
-                await message.delete()
-                return
-
-        for bad_word in self.filtered_words:
-            if bad_word in message.content.lower().replace(" ", ""):
-                dt = datetime.now()
-                uUser = message.author.display_name + " (<@" + str(message.author.id) + ">)"
-                uAvatar = message.author.avatar_url_as(static_format='jpeg')
-                bad_channel = message.channel.mention
-                orig_msg = message.content
-                targetCH = self.bot.get_channel(reportChannelID)
-                pingMods = get(message.guild.roles, id=modID).mention
-
-                await message.delete()
-
-                embedx = Embed(title="Member Report (Bad Word)", colour=Colour(0x8B572A), timestamp=dt)
-                embedx.set_thumbnail(url=uAvatar)
-                embedx.set_footer(text="Prototype X1")
-                embedx.add_field(name="Member", value=uUser, inline=False)
-                embedx.add_field(name="Word", value=bad_word, inline=False)
-                embedx.add_field(name="Original Message", value=orig_msg, inline=False)
-                embedx.add_field(name="Channel", value=bad_channel, inline=False)
-
-                await targetCH.send(pingMods)
-                await targetCH.send(embed=embedx)
-                return
 
     @commands.command(name="reloadFilter")
     @commands.has_role('Moderators')
