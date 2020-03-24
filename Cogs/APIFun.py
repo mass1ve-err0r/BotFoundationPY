@@ -52,12 +52,6 @@ class Fun(commands.Cog):
             embedx2.add_field(name="**(current) Ratio: Case / 1M**", value=str(data['casesPerOneMillion']), inline=False)
             await ctx.send(embed=embedx2)
 
-    @commands.command(name="say")
-    @commands.has_role('Moderators')
-    @commands.guild_only()
-    async def corona(self, ctx, channel: TextChannel, *, message: str):
-        await channel.send(message)
-
 
 def setup(bot):
     bot.add_cog(Fun(bot))
