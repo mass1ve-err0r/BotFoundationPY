@@ -6,7 +6,7 @@ from discord.ext import commands
 bot = commands.Bot(command_prefix='?')
 bot.remove_command("help")
 
-# Disabled Cogs: AntiSpam, Logger, Filter, OptionalFilters, Music
+# Disabled Cogs: AntiSpam, Logger, Filter, OptionalFilters and Music
 extensions = ['Cogs.Moderators',
               'Cogs.Fun',
               'Cogs.Maintenance']
