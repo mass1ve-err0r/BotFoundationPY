@@ -184,6 +184,45 @@ class Moderators(commands.Cog):
         embedx.add_field(name="Reason", value=reason, inline=False)
         await privateCH.send(embed=embedx)
 
+    @commands.command(name='userinfo')
+    @commands.has_role('Moderators')
+    @commands.guild_only()
+    async def userinfo(self, ctx, memberID: int = 0):
+        dt = datetime.now()
+        if memberID == 0:
+            await ctx.message.delete()
+            embedx1 = Embed(title="ERROR (UserInfo Command)", color=Colour(0xD0021B), timestamp=dt)
+            embedx1.set_footer(text="Prototype X1")
+            embedx1.add_field(name="dmsg", value="Missing memberID !")
+            await ctx.send(embed=embedx1, delete_after=3)
+            return
+
+        member = None
+        for guild in self.bot.guilds:
+            for gMember in guild.members:
+                if gMember.id == memberID:
+                    member = gMember
+                    break
+            else:
+                continue
+            break
+
+        uUser = member.display_name + " (<@" + str(member.id) + ">)"
+        uMod = ctx.author.display_name
+        uAvatar = member.avatar_url_as(static_format='jpeg')
+        uJoinDate = member.joined_at.strftime("%d/%m/%Y at %H:%M:%S")
+        uCreationDate = member.created_at.strftime("%d/%m/%Y at %H:%M:%S")
+
+        embedx2 = Embed(title="Member Information", colour=Colour(0xAE4CD6), timestamp=dt)
+        embedx2.set_thumbnail(url=uAvatar)
+        embedx2.set_footer(text="Requested by: " + uMod)
+        embedx2.add_field(name='Member', value=uUser, inline=False)
+        embedx2.add_field(name='Account Creation Date', value=uCreationDate, inline=False)
+        embedx2.add_field(name='Guild Join Date', value=uJoinDate, inline=False)
+        await ctx.send(embed=embedx2)
+        return
+
+    @userinfo.error
     @removebadword.error
     @addbadword.error
     @mute.error
