@@ -5,7 +5,7 @@ from discord import Embed, Colour, TextChannel
 from discord.ext import commands
 
 
-class Fun(commands.Cog):
+class APIFun(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
@@ -54,4 +54,4 @@ class Fun(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Fun(bot))
+    bot.add_cog(APIFun(bot))
