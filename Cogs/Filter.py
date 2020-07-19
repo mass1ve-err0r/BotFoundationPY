@@ -25,8 +25,9 @@ class Filter(commands.Cog):
             return
 
         try:
+            msg_cached = message.content.lower().replace(" ", "")
             for bad_word in self.filtered_words:
-                if bad_word in message.content.lower().replace(" ", ""):
+                if bad_word in msg_cached:
                     dt = datetime.now()
                     uUser = message.author.display_name + " (<@" + str(message.author.id) + ">)"
                     uAvatar = message.author.avatar_url_as(static_format='jpeg')
