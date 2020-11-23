@@ -6,7 +6,5 @@ class Test(commands.Cog):
         self.bot = bot
 
 
-
-
 def setup(bot):
     bot.add_cog(Test(bot))
